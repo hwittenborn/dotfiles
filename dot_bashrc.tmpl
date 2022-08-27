@@ -1,0 +1,107 @@
+# If not running interactively, don't do anything.
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# Don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options.
+HISTCONTROL=ignoreboth
+
+# Append to the history file, don't overwrite it.
+shopt -s histappend
+
+# For setting history length see HISTSIZE and HISTFILESIZE in bash(1).
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# Check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# Match all files and zero or more directories and subdirectories.
+shopt -s globstar
+
+# Make less more friendly for non-text input files, see lesspipe(1).
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# Enable Bash completions.
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# Variables I use a lot.
+declare ARCHLINUX_URL='archlinux.org'
+declare AUR_URL="aur.${ARCHLINUX_URL}"
+declare DRONE_SERVER="drone.${HW_URL}"
+declare DRONE_AUTOSCALER="drone-autoscale.${HW_URL}"
+declare DRONE_TOKEN="{{ (bitwarden "item" "20accf76-740d-4afb-9bf2-545dbdf2ec79").login.password }}"
+declare HW_URL='hunterwittenborn.com'
+declare PROGET_SERVER="proget.${HW_URL}"
+declare PROGET_TOKEN='{{ (bitwarden "item" "571402a9-96ca-44c0-a455-b0fa84e1d929").login.password }}'
+
+# MPR CLI auth alias.
+alias mist='MPR_TOKEN={{ (bitwarden "item" "b5eeaec3-b58b-4238-b2ca-ce1bb7b5aba7").login.password }} mist'
+
+# Starship shell prompt.
+export STARSHIP_CONFIG="${HOME}/.config/starship.toml"
+eval "$(starship init bash)"
+
+# Cat -> Bat alias.
+if type -p bat 1> /dev/null; then
+    alias cat='bat -p --paging never'
+fi
+
+# ls -> Exa alias.
+if type -p exa 1> /dev/null; then
+    alias ls='exa'
+    alias ll='exa -l --octal-permissions --no-permissions --git --time-style long-iso'
+    alias la='exa -a'
+fi
+
+# Cd -> Zoxide alias.
+if type -p zoxide 1> /dev/null; then
+    export _ZO_ECHO=1
+    eval "$(zoxide init bash --cmd cd)"
+fi
+
+# Neovim environment variable.
+if type -p nvim 1> /dev/null; then
+    export EDITOR=nvim
+fi
+
+# Bitwarden CLI alias.
+if type -p bw 1> /dev/null; then
+    alias bw='BW_SESSION="{{ (bitwarden "item" "439cc8d1-9413-44eb-b41a-c10a34553d29").login.password }}" bw'
+fi
+
+# Python -> Python 3 alias.
+alias python="python3"
+
+# Sudo wrapper so our env vars always get passed.
+sudo() {
+    "$(type -pf sudo)" -E "${@}"
+}
+
+# Drone CLI environment variables.
+alias drone="DRONE_TOKEN=${DRONE_TOKEN} DRONE_SERVER=https://${DRONE_SERVER} DRONE_AUTOSCALER=https://${DRONE_AUTOSCALER} drone"
+
+# Create and source Python virtual environments.
+venv() {
+  if [[ "${1}" == "source" ]]; then
+     source ".venv/bin/activate"
+  elif [[ "${1}" == "create" ]]; then
+      echo "Creating venv at '${PWD}/.venv'..."
+      python -m venv .venv/ || return 1
+      return 0
+  else
+      echo "Invalid command '${1}'."
+      return 1
+  fi
+}
+
+# vim: set syntax=bash sw=4 expandtab:
