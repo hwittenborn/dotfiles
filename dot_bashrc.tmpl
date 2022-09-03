@@ -37,10 +37,10 @@ fi
 # Variables I use a lot.
 declare ARCHLINUX_URL='archlinux.org'
 declare AUR_URL="aur.${ARCHLINUX_URL}"
+declare HW_URL='hunterwittenborn.com'
 declare DRONE_SERVER="drone.${HW_URL}"
 declare DRONE_AUTOSCALER="drone-autoscale.${HW_URL}"
 declare DRONE_TOKEN="{{ (bitwarden "item" "20accf76-740d-4afb-9bf2-545dbdf2ec79").login.password }}"
-declare HW_URL='hunterwittenborn.com'
 declare PROGET_SERVER="proget.${HW_URL}"
 declare PROGET_TOKEN='{{ (bitwarden "item" "571402a9-96ca-44c0-a455-b0fa84e1d929").login.password }}'
 
