@@ -104,4 +104,11 @@ venv() {
   fi
 }
 
+# Copy the current directory to the remote machine.
+rsync-cp() {
+    local rsync_user='hunter@home.hunterwittenborn.com'
+    ssh "${rsync_user}" mkdir -p "${PWD}"
+    rsync -a "${PWD}" "${rsync_user}:${PWD}"
+}
+
 # vim: set syntax=bash sw=4 expandtab:
