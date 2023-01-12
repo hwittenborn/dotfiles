@@ -40,12 +40,9 @@ declare AUR_URL="aur.${ARCHLINUX_URL}"
 declare HW_URL='hunterwittenborn.com'
 declare DRONE_SERVER="drone.${HW_URL}"
 declare DRONE_AUTOSCALER="drone-autoscale.${HW_URL}"
-declare DRONE_TOKEN="{{ (bitwarden "item" "20accf76-740d-4afb-9bf2-545dbdf2ec79").login.password }}"
+declare DRONE_TOKEN="{{ (vault "kv/chezmoi").data.data.drone_token }}"
 declare PROGET_SERVER="proget.${HW_URL}"
-declare PROGET_TOKEN='{{ (bitwarden "item" "571402a9-96ca-44c0-a455-b0fa84e1d929").login.password }}'
-
-# MPR CLI auth alias.
-alias mist='MPR_TOKEN={{ (bitwarden "item" "b5eeaec3-b58b-4238-b2ca-ce1bb7b5aba7").login.password }} mist'
+declare PROGET_TOKEN='{{ (vault "kv/chezmoi").data.data.proget_token }}'
 
 # Starship shell prompt.
 export STARSHIP_CONFIG="${HOME}/.config/starship.toml"
@@ -74,18 +71,8 @@ if type -p nvim 1> /dev/null; then
     export EDITOR=nvim
 fi
 
-# Bitwarden CLI alias.
-if type -p bw 1> /dev/null; then
-    alias bw='BW_SESSION="{{ (bitwarden "item" "439cc8d1-9413-44eb-b41a-c10a34553d29").login.password }}" bw'
-fi
-
 # Python -> Python 3 alias.
 alias python="python3"
-
-# Sudo wrapper so our env vars always get passed.
-sudo() {
-    "$(type -pf sudo)" -E "${@}"
-}
 
 # Drone CLI environment variables.
 alias drone="DRONE_TOKEN=${DRONE_TOKEN} DRONE_SERVER=https://${DRONE_SERVER} DRONE_AUTOSCALER=https://${DRONE_AUTOSCALER} drone"
@@ -102,13 +89,6 @@ venv() {
       echo "Invalid command '${1}'."
       return 1
   fi
-}
-
-# Copy the current directory to the remote machine.
-rsync-cp() {
-    local rsync_user='hunter@home.hunterwittenborn.com'
-    ssh "${rsync_user}" mkdir -p "${PWD}"
-    rsync -a "${PWD}" "${rsync_user}:${PWD}"
 }
 
 # vim: set syntax=bash sw=4 expandtab:
