@@ -44,6 +44,11 @@ declare DRONE_TOKEN="{{ (vault "kv/chezmoi").data.data.drone_token }}"
 declare PROGET_SERVER="proget.${HW_URL}"
 declare PROGET_TOKEN='{{ (vault "kv/chezmoi").data.data.proget_token }}'
 
+# Aliases.
+alias drone="DRONE_TOKEN=${DRONE_TOKEN} DRONE_SERVER=https://${DRONE_SERVER} DRONE_AUTOSCALER=https://${DRONE_AUTOSCALER} drone"
+alias python=python3
+alias vault="VAULT_ADDR='https://vault.${HW_URL}' vault"
+
 # Starship shell prompt.
 export STARSHIP_CONFIG="${HOME}/.config/starship.toml"
 eval "$(starship init bash)"
@@ -70,12 +75,6 @@ fi
 if type -p nvim 1> /dev/null; then
     export EDITOR=nvim
 fi
-
-# Python -> Python 3 alias.
-alias python="python3"
-
-# Drone CLI environment variables.
-alias drone="DRONE_TOKEN=${DRONE_TOKEN} DRONE_SERVER=https://${DRONE_SERVER} DRONE_AUTOSCALER=https://${DRONE_AUTOSCALER} drone"
 
 # Create and source Python virtual environments.
 venv() {
