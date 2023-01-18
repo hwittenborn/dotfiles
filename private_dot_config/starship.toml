@@ -1,0 +1,37 @@
+format = '''
+$python$cmd_duration$username$hostname:$directory( $git_branch$git_status)$character
+'''
+add_newline = false
+
+[username]
+format = '[$user@]($style)'
+show_always = true
+
+[hostname]
+ssh_only = false
+format = '[$hostname](bold yellow)'
+
+[directory]
+truncation_length = 50
+truncate_to_repo = false
+format = '[$path]($style)[$read_only]($read_only_style)'
+
+[git_branch]
+format = '[on $symbol$branch(:$remote_branch)]($style) '
+
+[git_status]
+style = "bold purple"
+
+[cmd_duration]
+min_time = 1000
+format = '''
+[took $duration]($style)
+'''
+
+[character]
+success_symbol = '[\$](bold green)'
+error_symbol = '[\$](bold red)'
+
+[python]
+format = '([\($virtualenv\)]($style) )'
+style = "green bold"
