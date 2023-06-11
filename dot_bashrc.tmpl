@@ -40,9 +40,8 @@ declare AUR_URL="aur.${ARCHLINUX_URL}"
 declare HW_URL='hunterwittenborn.com'
 declare DRONE_SERVER="drone.${HW_URL}"
 declare DRONE_AUTOSCALER="drone-autoscale.${HW_URL}"
-declare DRONE_TOKEN="{{ (vault "kv/chezmoi").data.data.drone_token }}"
 declare PROGET_SERVER="proget.${HW_URL}"
-declare PROGET_TOKEN='{{ (vault "kv/chezmoi").data.data.proget_token }}'
+declare PROGET_TOKEN='{{ (secretJSON "secrets" "get" "-c" "ci" "PROGET_TOKEN" "--json").PROGET_TOKEN.computed }}'
 
 # Aliases.
 alias drone="DRONE_TOKEN=${DRONE_TOKEN} DRONE_SERVER=https://${DRONE_SERVER} DRONE_AUTOSCALER=https://${DRONE_AUTOSCALER} drone"
